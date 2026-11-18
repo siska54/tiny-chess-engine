@@ -1,6 +1,3 @@
-# Chess engine for make.fun/bounty/tiny-chess-01
-# 10x12 mailbox board + alpha-beta search (depth 3)
-# By: @siska-rabella
 import os,json,urllib.request as R
 
 def api(p,d={}):
@@ -64,7 +61,7 @@ def mk(bd,mv):
     bd=bd[:];f,t,fl=mv;p=bd[f];bd[f]='.'
     if fl and fl not in('','ep'):bd[t]=fl.upper()if p.isupper()else fl.lower()
     else:bd[t]=p
-    if fl=='ep':bd[t+(10 if p.isupper()else-10)]='.'\
+    if fl=='ep':bd[t+(10 if p.isupper()else-10)]='.'
     return bd
 
 def atk(bd,sq,by):
