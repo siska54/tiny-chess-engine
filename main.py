@@ -13,8 +13,19 @@ def fen2b(fen):
  if s[3]!='-':ep=(10-int(s[3][1]))*10+ord(s[3][0])-96
  return bd,s[1],ep
 V={'P':100,'N':300,'B':310,'R':500,'Q':900,'K':0}
+_P=[0]*8+[50]*8+[10,10,20,30,30,20,10,10,5,5,10,25,25,10,5,5,0,0,0,20,20,0,0,0,5,-5,-10,0,0,-10,-5,5,5,10,10,-20,-20,10,10,5]+[0]*8
+_N=[-50,-40,-30,-30,-30,-30,-40,-50,-40,-20,0,0,0,0,-20,-40,-30,0,10,15,15,10,0,-30,-30,5,15,20,20,15,5,-30,-30,0,15,20,20,15,0,-30,-30,5,10,15,15,10,5,-30,-40,-20,0,5,5,0,-20,-40,-50,-40,-30,-30,-30,-30,-40,-50]
+_B=[-20,-10,-10,-10,-10,-10,-10,-20,-10,0,0,0,0,0,0,-10,-10,0,5,10,10,5,0,-10,-10,5,5,10,10,5,5,-10,-10,0,10,10,10,10,0,-10,-10,10,10,10,10,10,10,-10,-10,5,0,0,0,0,5,-10,-20,-10,-10,-10,-10,-10,-10,-20]
+PT={'P':_P,'N':_N,'B':_B}
+def pst(p,i):
+ P=p.upper()
+ if P not in PT:return 0
+ r,c=(i//10)-2,(i%10)-1
+ idx=r*8+c if p.isupper()else(7-r)*8+c
+ t=PT[P]
+ return t[idx]if 0<=idx<64 else 0
 def ev(bd,t):
- s=sum((1 if p.isupper()else-1)*V.get(p.upper(),0)for i in range(20,100)if(p:=bd[i])not in(' ','.'))
+ s=sum((1 if p.isupper()else-1)*(V.get(p.upper(),0)+pst(p,i))for i in range(20,100)if(p:=bd[i])not in(' ','.'))
  return s if t=='w'else-s
 def gm(bd,t,ep):
  res=[];me=str.isupper if t=='w'else str.islower;opp=str.islower if t=='w'else str.isupper
@@ -55,7 +66,7 @@ def mk(bd,mv):
  bd=bd[:];f,t,fl=mv;p=bd[f];bd[f]='.'
  if fl and fl not in('','ep'):bd[t]=fl.upper()if p.isupper()else fl.lower()
  else:bd[t]=p
- if fl=='ep':bd[t+(10 if p.isupper()else-10)]='.'
+ if fl=='ep':bd[t+(10 if p.isupper()else-10)]='.''
  return bd
 def atk(bd,sq,by):
  me=str.isupper if by=='w'else str.islower;pd=-10 if by=='w'else 10
